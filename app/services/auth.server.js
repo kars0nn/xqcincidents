@@ -11,7 +11,8 @@ const twitchClientSecret = process.env.TWITCH_API_SECRET;
 const whitelist = [
   "dkarsonn",
   "vmyk",
-  "vmykbot"
+  "vmykbot",
+  "jasonwecksell"
 ]
 
 export const twitchStrategy = new TwitchStrategy(
