@@ -1,0 +1,126 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String     @id @unique @default(uuid())
+  twitch_id        String     @unique
+  display_name     String     @unique
+  profile_image    String?
+  email            String?
+  broadcaster_type String?
+  stvbadge_url     String?
+  stvbadge_tooltip String?
+  role             Role       @default(USER)
+  description      String?
+  temp_token       String?
+  comments         Comment[]  @relation("creator")
+  liked_comments   Comment[]  @relation("liked")
+  awared_posts     Incident[] @relation("aware")
+  created_at       DateTime   @default(now())
+  updated_at       DateTime?  @updatedAt
+  name_color       String?
+  badges           Badge[]
+  incidents        Incident[] @relation("creator")
+  is_verified      Boolean    @default(false)
+  is_subscriber    Boolean    @default(false)
+  is_banned        Boolean    @default(false)
+}
+
+model Badge {
+  id         String   @id @unique @default(cuid())
+  users      User[]
+  image      String
+  name       String
+  rarity     Rarity   @default(COMMON)
+  created_at DateTime @default(now())
+}
+
+model Incident {
+  id             String       @id @unique @default(cuid())
+  name           String
+  clip_link      String?
+  clip_views     Int?
+  clipper        String?
+  thumbnail_url  String?
+  screenshot     String?
+  game_id        String?
+  type           IncidentType
+  description    String?
+  date           DateTime?
+  created_at     DateTime     @default(now())
+  status         Status       @default(PENDING)
+  awares         User[]       @relation("aware")
+  severity_level Level?
+  submitter      User         @relation("creator", fields: [submitter_id], references: [id])
+  submitter_id   String
+  comments       Comment[]
+}
+
+model Comment {
+  id          String    @id @unique @default(cuid())
+  content     String
+  liked_by    User[]    @relation("liked")
+  creator     User      @relation("creator", fields: [creator_id], references: [id])
+  creator_id  String
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+  take_level  TakeLevel @default(NORMAL)
+  incident    Incident  @relation(fields: [incident_id], references: [id])
+  incident_id String
+}
+
+enum Rarity {
+  COMMON
+  HARD_TO_GET
+  RARE
+  ULTRA_RARE
+  IMPOSSIBLE
+}
+
+enum Level {
+  NONE
+  LOW
+  MEDIUM
+  HIGH
+  ULTRA
+  OHMYGOD
+  DIESOFCRINGE
+}
+
+enum TakeLevel {
+  WARLORD
+  AMAZING
+  GOOD
+  NORMAL
+  ALRIGHT
+  BAD
+  DOGSHIT
+}
+
+enum Status {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+enum IncidentType {
+  STREAM
+  CHAT
+  OFFLINE_CHAT
+  WEBSITE
+}
+
+enum Role {
+  ADMIN
+  MOD
+  USER
+}

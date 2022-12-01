@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#nprogress .bar {
+    background: #9d00ff !important;
+    border-radius: 10px !important;
+}
+
+@media all and (display-mode: standalone) {
+    .standalone {
+        display: none;
+    }
+}
+
+html::-webkit-scrollbar {
+    width: 6px;
+    z-index: 5;
+}
+
+html::-webkit-scrollbar-track {
+    background: rgb(0, 0, 0);
+    z-index: 4;
+}
+
+html::-webkit-scrollbar-thumb {
+    background: #2e2e2e;
+    width: 3px;
+    border-radius: 8px;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+    background: #272727;
+    border-radius: 10px;
+}
+
+html::-webkit-scrollbar-thumb:active {
+    background: #262626;
+    border-radius: 10px;
+}
