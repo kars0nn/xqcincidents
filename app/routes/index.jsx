@@ -7,6 +7,7 @@ import { getAllIncidents, getLatestIncident } from '~/services/incident.server';
 import { Username } from '~/components/Username';
 import Timestamp from 'react-timestamp'
 import { ClientOnly } from 'remix-utils';
+import Since from 'react-since'
 
 export const loader = async ({ request }) => {
   let user = await isUserLoggedInSafe(request)
@@ -54,7 +55,7 @@ export default function Index() {
                     <div key={i.title}>
                       <div className='font-extrabold text-xl text-neutral-400'>
                         <ClientOnly>
-                          {() => <Timestamp date={i.date} options={{ format: "mm/dd/yyyy" }} />}
+                          {() => <Since date={i.date} live={true} />}
                         </ClientOnly>
                         <img src={i.thumbnail_url} className="hidden lg:inline-block lg:w-40 lg:float-right lg:rounded-xl" />
                       </div>
@@ -83,7 +84,25 @@ export default function Index() {
         </div>
         <br />
         <div className='text-center'>
-        <Link className='hover:underline font-extrabold text-xl' to="/i">view all incidents</Link>
+          {
+            user
+              ?
+              <>
+                <br className='hidden md:block' />
+                <Link className='mb-3 px-4 py-2 bg-blue-700 text-yellow-300 font-bold rounded-md transition-all duration-100 ease-in-out hover:bg-blue-600' to="/i/submit">
+                  Submit an Incident
+                </Link>
+                <br />
+                <br />
+                or
+                <br />
+              </>
+              :
+              <>
+              </>
+          }
+          <br />
+          <Link className='hover:underline font-extrabold text-xl' to="/i">view all incidents</Link>
         </div>
         <br />
       </div>

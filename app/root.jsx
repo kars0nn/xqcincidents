@@ -1,4 +1,4 @@
-const {
+import {
   Links,
   Link,
   LiveReload,
@@ -9,7 +9,7 @@ const {
   useTransition,
   Form,
   useLoaderData
-} = require("@remix-run/react");
+} from "@remix-run/react";
 import { useEffect } from "react";
 import styles from "./styles/app.css"
 import NProgress from "nprogress";
@@ -20,6 +20,7 @@ import { findUserById } from '~/services/user.server';
 import { authenticator, twitchStrategy } from '~/services/auth.server';
 import { Footer } from "./components/Footer";
 import { isUserLoggedInSafe } from "~/services/auth.server";
+import { BsTwitch } from 'react-icons/bs'
 
 export function links() {
   return [
@@ -90,18 +91,30 @@ export function Navigation({ children }) {
   // let check = data.isLoggedIn
   return (
     <>
-      <div className="p-2 bg-black/20" >
+      <div className="p-2.5 bg-black/20" >
         <Link to="/">
           <img src="https://cdn.7tv.app/emote/6249bf0a835f6c1e0ad979bb/4x.webp" className="w-12 inline mr-5" alt="fabulous_pshyco's xqcDespair emote on 7tv" title="fabulous_pshyco's xqcDespair emote on 7tv" />
           <span className="font-bold hover:underline" title="xQc incidents">xQc incidents</span>
-          {/* <div className="float-right">
-          <Link to="/i" className="hover:underline" title="incidents page">incidents</Link>
-            <Form action={check ? '/logout' : '/auth/twitch'} method="post">
-              <button className='bg-purple-500 p-2 rounded-lg text-white border-b-purple-900 border-b-2 '>{check ? 'Logout' : 'Login with Twitch'}</button>
-            </Form>
-          </div> */}
-          {/* <DropdownMenu /> */}
         </Link>
+        {
+          data.user
+            ?
+            <>
+              <div className="float-right">
+                <Form action='/logout' method="post">
+                  <button className='bg-purple-600 p-2 rounded-lg text-white border-b-purple-900 border-b-2 '><BsTwitch className="inline" /> Logout</button>
+                </Form>
+              </div>
+            </>
+            :
+            <>
+              <div className="float-right">
+                <Form action='/auth/twitch' method="post">
+                  <button className='bg-purple-600 font-bold p-2 rounded-lg text-white border-b-purple-900 border-b-2 '><BsTwitch className="inline" /> Login with twitch</button>
+                </Form>
+              </div>
+            </>
+        }
       </div>
       <br />
       {children}

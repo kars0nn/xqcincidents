@@ -12,6 +12,8 @@ import SevenTV from '7tv'
 import { CommentI } from '~/components/CommentI'
 import { Disclosure } from '@headlessui/react'
 import { RiChatDeleteLine } from 'react-icons/ri'
+import TextInput from 'react-autocomplete-input';
+import 'react-autocomplete-input/dist/bundle.css';
 
 export const loader = async ({ request, params }) => {
     const id = params.id
