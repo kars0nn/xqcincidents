@@ -7,7 +7,6 @@ import { getAllIncidents, getLatestIncident } from '~/services/incident.server';
 import { Username } from '~/components/Username';
 import Timestamp from 'react-timestamp'
 import { ClientOnly } from 'remix-utils';
-import Since from 'react-since'
 
 export const loader = async ({ request }) => {
   let user = await isUserLoggedInSafe(request)
@@ -55,7 +54,7 @@ export default function Index() {
                     <div key={i.title}>
                       <div className='font-extrabold text-xl text-neutral-400'>
                         <ClientOnly>
-                          {() => <Since date={i.date} live={true} />}
+                          {() => <Timestamp date={i.date} options={{ format: "mm/dd/yyyy" }} />}
                         </ClientOnly>
                         <img src={i.thumbnail_url} className="hidden lg:inline-block lg:w-40 lg:float-right lg:rounded-xl" />
                       </div>
