@@ -47,9 +47,16 @@ export const loader = async ({ request }) => {
 
 export const meta = () => ({
   charset: "utf-8",
-  title: "xQc Incidents",
+  title: `xQc incidents`,
+  'og:title': `xQc incidents`,
+  description: `a collection of incidents that occur on xQc's stream`,
+  'og:description': `a collection of incidents that occur on xQc's stream`,
+  author: `dkarsonn`,
+  'og:image': `/favicon.ico`,
+  'og:type': `website`,
+  'og:image:alt': 'Aware',
   viewport: "width=device-width,initial-scale=1",
-});
+})
 
 export default function App() {
   let data = useLoaderData()
