@@ -16,7 +16,7 @@ export const twitchStrategy = new TwitchStrategy(
   {
     clientId: twitchClientId,
     clientSecret: twitchClientSecret,
-    callbackURL: "http://localhost:3000/auth/twitch/callback",
+    callbackURL: process.env.REDIRECT_URL,
     sessionStorage,
     includeEmail: true,
   },
