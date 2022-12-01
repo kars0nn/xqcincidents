@@ -9,7 +9,6 @@ import { Link } from '@remix-run/react'
 import { ClientOnly } from 'remix-utils';
 import { useState } from 'react';
 import invariant from "tiny-invariant";
-import validator from 'validator';
 import isString from 'is-string'
 import { submitIncident } from '~/services/incident.server';
 
