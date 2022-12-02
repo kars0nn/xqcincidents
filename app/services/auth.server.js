@@ -12,7 +12,9 @@ const whitelist = [
   "dkarsonn",
   "vmyk",
   "vmykbot",
-  "JasonWecksell"
+  "JasonWecksell",
+  "AyerrFPS",
+  "pattyfk"
 ]
 
 export const twitchStrategy = new TwitchStrategy(
