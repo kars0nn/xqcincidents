@@ -9,7 +9,6 @@ import Timestamp from 'react-timestamp'
 import { Username } from '~/components/Username';
 import SevenTV from '7tv'
 import { CommentI } from '~/components/CommentI'
-import { Disclosure } from '@headlessui/react'
 import { RiChatDeleteLine } from 'react-icons/ri'
 
 export const loader = async ({ request, params }) => {
@@ -59,7 +58,7 @@ export async function action({ request }) {
             return { error: true }
         }
     } else if (_action === 'comment') {
-        if (values?.content?.trim() === "" || values?.content === null || !isString(values?.content)) {
+        if (values?.content?.trim() === "" || values?.content === null) {
             errors.blanktext = true
         }
         // if (values?.mood?.trim() === "" || values?.mood === null || !isString(values?.mood)) {
@@ -138,7 +137,10 @@ export default function Incident() {
                                     {incident?.name}
                                 </h1>
                                 <div className='font-bold text-xl text-neutral-400'>
-                                    <Timestamp date={incident?.date} />
+                                    {/* <Timestamp date={incident?.date} /> */}
+                                    <ClientOnly>
+                                        {() => <Timestamp date={incident?.date} />}
+                                    </ClientOnly>
                                     {/* <ClientOnly>
                                         {() => <Timestamp date={incident?.date} />}
                                     </ClientOnly> */}
@@ -168,11 +170,11 @@ export default function Incident() {
                                                         ?
                                                         incident.awares.length + 1
                                                         :
-                                                        isUnliking
+                                                        (isUnliking
                                                             ?
                                                             incident.awares.length - 1
                                                             :
-                                                            incident.awares.length
+                                                            incident.awares.length)
                                                 }
                                             </button>
                                         </Form>
@@ -325,7 +327,7 @@ export default function Incident() {
                                                         }
                                                     </span>
                                                     <div className='inline mr-1'>
-                                                        <span className='text-neutral-400 mr-0.5 text-sm font-light'>
+                                                        <span className='text-neutral-400 hidden md:inline mr-0.5 text-sm font-light'>
                                                             <ClientOnly>
                                                                 {() => <Timestamp relative className="hidden md:inline md:float-right font-mono my-auto" date={com?.created_at} />}
                                                             </ClientOnly>

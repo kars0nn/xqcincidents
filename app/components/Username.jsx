@@ -26,7 +26,7 @@ export function Username({ user, small }) {
                             src="/badges/admin.png"
                         />
                     :
-                    <></>
+                    ""
             }
             <img
                 title={user.stvbadge_tooltip}
