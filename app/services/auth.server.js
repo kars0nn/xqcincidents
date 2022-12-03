@@ -8,15 +8,6 @@ import { findUserById, getUserBadge } from "./user.server";
 const twitchClientId = process.env.TWITCH_API_CLIENT;
 const twitchClientSecret = process.env.TWITCH_API_SECRET;
 
-const whitelist = [
-  "dkarsonn",
-  "vmyk",
-  "vmykbot",
-  "JasonWecksell",
-  "AyerrFPS",
-  "pattyfk"
-]
-
 export const twitchStrategy = new TwitchStrategy(
   {
     clientId: twitchClientId,
@@ -26,46 +17,42 @@ export const twitchStrategy = new TwitchStrategy(
     includeEmail: false,
   },
   async ({ profile, token }) => {
-    if (whitelist.includes(profile.display_name)) {
-      // let email = profile.email
-      // let encryptEmail = await encryptData(email)
-      let apiToken = await encryptData(token.access_token)
-      try {
-        let badge = await getUserBadge(profile.id)
+    // let email = profile.email
+    // let encryptEmail = await encryptData(email)
+    let apiToken = await encryptData(token.access_token)
+    try {
+      let badge = await getUserBadge(profile.id)
 
-        let user = await db.user.upsert({
-          where: {
-            twitch_id: profile.id
-          },
-          update: {
-            profile_image: profile.profile_image_url,
-            stvbadge_tooltip: badge?.tooltip ?? null,
-            stvbadge_url: badge?.url ?? null,
-            temp_token: apiToken
-          },
-          create: {
-            twitch_id: profile.id,
-            display_name: profile.display_name,
-            profile_image: profile.profile_image_url,
-            stvbadge_tooltip: badge?.tooltip ?? null,
-            stvbadge_url: badge?.url ?? null,
-            // email: encryptEmail,
-            broadcaster_type: profile.broadcaster_type === "" ? "normal" : profile.broadcaster_type,
-            description: profile.description ? profile.description : "twitch.",
-            temp_token: apiToken
-          }
-        })
+      let user = await db.user.upsert({
+        where: {
+          twitch_id: profile.id
+        },
+        update: {
+          profile_image: profile.profile_image_url,
+          stvbadge_tooltip: badge?.tooltip ?? null,
+          stvbadge_url: badge?.url ?? null,
+          temp_token: apiToken
+        },
+        create: {
+          twitch_id: profile.id,
+          display_name: profile.display_name,
+          profile_image: profile.profile_image_url,
+          stvbadge_tooltip: badge?.tooltip ?? null,
+          stvbadge_url: badge?.url ?? null,
+          // email: encryptEmail,
+          broadcaster_type: profile.broadcaster_type === "" ? "normal" : profile.broadcaster_type,
+          description: profile.description ? profile.description : "twitch.",
+          temp_token: apiToken
+        }
+      })
 
-        return {
-          user_id: user.id,
-          accessToken: token.access_token,
-        };
-      } catch (error) {
-        console.log(error)
-        return null
-      }
-    } else {
-      return 
+      return {
+        user_id: user.id,
+        accessToken: token.access_token,
+      };
+    } catch (error) {
+      console.log(error)
+      return null
     }
   }
 );
