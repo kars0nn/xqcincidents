@@ -6,14 +6,11 @@ import { acceptIncident, addAwareToIncident, addCommentToIncident, getClipInfo, 
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useEffect, useState } from 'react'
 import Timestamp from 'react-timestamp'
-import isString from 'is-string'
 import { Username } from '~/components/Username';
 import SevenTV from '7tv'
 import { CommentI } from '~/components/CommentI'
 import { Disclosure } from '@headlessui/react'
 import { RiChatDeleteLine } from 'react-icons/ri'
-import TextInput from 'react-autocomplete-input';
-import 'react-autocomplete-input/dist/bundle.css';
 
 export const loader = async ({ request, params }) => {
     const id = params.id
@@ -114,12 +111,6 @@ export default function Incident() {
     let isUnliking = transition.submission && transition.submission?.formData.get("_action") === "unlike";
 
 
-    // useEffect(() => {
-    //     if(isLiking) {
-
-    //     }
-    // })
-
     let [isOpen, setIsOpen] = useState(false)
 
     function closeModal() {
@@ -147,18 +138,20 @@ export default function Incident() {
                                     {incident?.name}
                                 </h1>
                                 <div className='font-bold text-xl text-neutral-400'>
-                                    <ClientOnly>
+                                    <Timestamp date={incident?.date} />
+                                    {/* <ClientOnly>
                                         {() => <Timestamp date={incident?.date} />}
-                                    </ClientOnly>
+                                    </ClientOnly> */}
                                 </div>
                             </div>
                             <br />
                             <div className='m max-w-full md:max-w-1/2 lg:max-w-3/5'>
-                                <ClientOnly>
+                                <TwitchClip clip={incident?.clip_link} className='rounded-lg w-full h-72 lg:h-96 lg:w-full' />
+                                {/* <ClientOnly>
                                     {(() =>
                                         <TwitchClip clip={incident?.clip_link} className='rounded-lg w-full h-72 lg:h-96 lg:w-full' />
                                     )}
-                                </ClientOnly>
+                                </ClientOnly> */}
                             </div>
                             <br />
                             <p className='p-3 rounded-md bg-black/20 text-neutral-200'>{incident?.description}</p>

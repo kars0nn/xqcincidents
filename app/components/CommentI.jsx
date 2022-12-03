@@ -1,7 +1,4 @@
-import { Menu } from '@headlessui/react'
-import { Link, Form } from '@remix-run/react'
 import { useEffect, useState } from 'react'
-import { BsTwitch } from 'react-icons/bs'
 import reactStringReplace from 'react-string-replace'
 // import { nazi, nword } from 'expletives'
 
@@ -29,6 +26,15 @@ export function CommentI({ emotes, content }) {
             <img title={e.name} className={`inline-block`} src={e.url} width={e.width.join(", ")} height={e.height.join(", ")} />
         ))
     })
+
+    function nword(text) {
+        const r = new RegExp(`[nN]+[iI1lL|]+[GgKkQq469]+[Ee3Aa4iI]+[RrAa4]+[sS]?`)
+        return r.test(text)
+    }
+    function nazi(text) {
+        const r = new RegExp(`[nN]+[a4A|]+[zZ]+[Ii1l]+[sS]?`)
+        return r.test(text)
+    }
 
     let isnsfw = nazi(content) || nword(content)
 
