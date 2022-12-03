@@ -57,7 +57,7 @@ export const meta = () => ({
   'og:type': `website`,
   'og:image:alt': 'Aware',
   viewport: "width=device-width,initial-scale=1",
-  "referrer": "no-refferer"
+  "referrer": "strict-origin-when-cross-origin"
 })
 
 export default function App() {
@@ -71,7 +71,7 @@ export default function App() {
   return (
     <html lang="en">
       <head>
-        <meta name="referrer" content="no-referrer" />
+        <meta name="referrer" content="strict-origin-when-cross-origin" />
         <Meta />
         <Links />
       </head>
