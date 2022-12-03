@@ -78,7 +78,7 @@ export default function Incident() {
                 </h1>
                 <div className='font-bold text-xl text-neutral-400'>
                     <ClientOnly>
-                        {() => <Timestamp date={data.date} options={{ format: "mm/dd/yyyy" }} />}
+                        {() => <Timestamp date={data.date} />}
                     </ClientOnly>
                 </div>
                 <br />
