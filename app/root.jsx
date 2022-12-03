@@ -64,7 +64,7 @@ export default function App() {
   let transition = useTransition();
   useEffect(() => {
     if (transition.state === "idle") NProgress.done();
-    else NProgress.start();
+    else if (!transition.submission) NProgress.start();
     NProgress.configure({ showSpinner: false });
   }, [transition.state]);
   return (
@@ -74,6 +74,11 @@ export default function App() {
         <Links />
       </head>
       <body className="bg-neutral-900 text-white">
+        <noscript>
+          <div className="font-bold text-xl bg-yellow-400 text-black p-2">
+            turn on javascript for the best experience
+          </div>
+        </noscript>
         <Navigation>
           <Outlet />
         </Navigation>
@@ -92,12 +97,20 @@ export function Navigation({ children }) {
   return (
     <>
       <div className="p-2.5 bg-black/20" >
-        <Link to="/">
-          <img src="https://cdn.7tv.app/emote/6249bf0a835f6c1e0ad979bb/4x.webp" className="w-12 inline mr-5" alt="fabulous_pshyco's xqcDespair emote on 7tv" title="fabulous_pshyco's xqcDespair emote on 7tv" />
-          <span className="font-bold hover:underline" title="xQc incidents">xQc incidents</span>
-        </Link>
         {
-          data.user
+          data?.user?.is_banned === true
+            ?
+              <>
+                <span className="w-12 inline mr-5 ">YOU ARE BANNED.</span>
+              </>
+          :
+            <Link to="/">
+              <img src="https://cdn.7tv.app/emote/6249bf0a835f6c1e0ad979bb/4x.webp" className="w-12 inline mr-5" alt="fabulous_pshyco's xqcDespair emote on 7tv" title="fabulous_pshyco's xqcDespair emote on 7tv" />
+              <span className="font-bold hover:underline" title="xQc incidents">xQc incidents</span>
+            </Link>
+        }
+        {
+          data?.user
             ?
             <>
               <div className="float-right">

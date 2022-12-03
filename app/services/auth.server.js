@@ -21,12 +21,12 @@ export const twitchStrategy = new TwitchStrategy(
     clientSecret: twitchClientSecret,
     callbackURL: process.env.REDIRECT_URL,
     sessionStorage,
-    includeEmail: true,
+    includeEmail: false,
   },
   async ({ profile, token }) => {
     if (whitelist.includes(profile.display_name)) {
-      let email = profile.email
-      let encryptEmail = await encryptData(email)
+      // let email = profile.email
+      // let encryptEmail = await encryptData(email)
       let apiToken = await encryptData(token.access_token)
       try {
         let badge = await getUserBadge(profile.id)
@@ -47,7 +47,7 @@ export const twitchStrategy = new TwitchStrategy(
             profile_image: profile.profile_image_url,
             stvbadge_tooltip: badge?.tooltip ?? null,
             stvbadge_url: badge?.url ?? null,
-            email: encryptEmail,
+            // email: encryptEmail,
             broadcaster_type: profile.broadcaster_type === "" ? "normal" : profile.broadcaster_type,
             description: profile.description ? profile.description : "twitch.",
             temp_token: apiToken

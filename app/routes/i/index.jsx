@@ -50,8 +50,8 @@ export default function Index() {
                                         <img src={i.thumbnail_url} className="w-full md:w-1/2 lg:w-1/3 my-3 rounded-lg lg:hidden" />
                                         <br className='hidden lg:block' />
                                         <div className='inline'>
-                                            <span className='text-white'><span className="font-bold font-mono">{i.comments.length}</span> </span><GoCommentDiscussion className='inline text-neutral-400 text-lg ml-0.5 mr-2' title='comments' />
-                                            | <span className="font-bold font-mono ml-1">{i.awares.length}</span> <img title='awares' src="https://cdn.7tv.app/emote/613265d8248add8fdae01ad0/1x.webp" className='inline w-[20px] ml-0.5' />
+                                            <span className="font-bold font-mono ml-1">{i.awares.length}</span> <img title='awares' src="https://cdn.7tv.app/emote/613265d8248add8fdae01ad0/1x.webp" className='inline w-[20px] ml-0.5 mr-2' />
+                                            | <span className='text-white'><span className="font-bold font-mono">{i.comments.length}</span> </span><GoCommentDiscussion className='inline text-neutral-400 text-lg ml-0.5 mr-2' title='comments' />
                                         </div>
                                         <br className='md:hidden' />
                                         <small className='md:float-right translate-y-2'>Clipped by {i.clipper} - Submitted by <Username small user={i.submitter} /> </small>

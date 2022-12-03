@@ -35,11 +35,8 @@ export async function action({ request }) {
         errors.blanktext = true
     }
 
-    console.log(values)
-
     let incident = await submitIncident(values, user, user.temp_token)
 
-    console.log(incident)
     if (incident?.id) {
         return redirect('/i');
     } else {

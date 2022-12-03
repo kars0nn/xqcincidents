@@ -65,13 +65,15 @@ export async function submitIncident(data, usa, token) {
     })
 }
 
-export async function acceptIncident(id) {
+export async function acceptIncident(id, title, description) {
     return await db.incident.update({
         where: {
             id: id
         },
         data: {
-            status: 'ACCEPTED'
+            status: 'ACCEPTED',
+            name: title,
+            description: description
         }
     })
 }
@@ -113,6 +115,7 @@ export async function getIncident(id) {
             comments: {
                 include: {
                     creator: {
+                        
                         select: {
                             display_name: true,
                             profile_image: true,
@@ -331,7 +334,7 @@ export async function removeAwareFromIncident(user_id, incident_id, token) {
 export async function addCommentToIncident(user_id, incident_id, content, token) {
     if(!token) return {error: 'unauthorized'}
     let ct = await checkToken(user_id, token)
-    if(!ct) return {error: 'unauthorized'}
+    if(!ct) return {error: 'unauthorized or banned.'}
     return await db.comment.create({
         data:{
             content: content,
@@ -390,9 +393,12 @@ export async function checkToken(user_id, token) {
             id:user_id
         }, 
         select: {
-            temp_token: true
+            temp_token: true,
+            is_banned: true
         }
     })
+
+    if (user.is_banned === true) return false;
 
     if(user.temp_token === token) {
         return true

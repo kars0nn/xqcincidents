@@ -1,10 +1,10 @@
 import { TwitchClip } from 'react-twitch-embed';
-import { Link, useLoaderData, Form, useActionData, NavLink } from '@remix-run/react'
+import { Link, useLoaderData, Form, useActionData, NavLink, useTransition, useFetcher } from '@remix-run/react'
 import { ClientOnly } from 'remix-utils';
 import { authenticator, isUserLoggedIn, isUserLoggedInSafe, twitchStrategy } from '~/services/auth.server';
 import { acceptIncident, addAwareToIncident, addCommentToIncident, getClipInfo, getIncident, hasUserLikedPost, rejectIncident, removeAwareFromIncident, removeCommentFromIncident } from '~/services/incident.server';
 import { Dialog, Transition } from '@headlessui/react'
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import Timestamp from 'react-timestamp'
 import isString from 'is-string'
 import { Username } from '~/components/Username';
@@ -22,7 +22,7 @@ export const loader = async ({ request, params }) => {
     let hasLiked = await hasUserLikedPost(user?.id, incident?.id)
     const api = SevenTV()
     const emotes = await api.fetchUserEmotes('xqc')
-    if(user) {
+    if (user) {
         incident?.comments?.forEach((c) => {
             if (c.creator_id === user?.id) {
                 c.can_user_modify = true
@@ -44,13 +44,23 @@ export async function action({ request }) {
     let { _action, ...values } = Object.fromEntries(formData);
 
     if (_action === 'like') {
-        await addAwareToIncident(user?.id, values?.id, user.temp_token)
+        try {
+            await addAwareToIncident(user?.id, values?.id, user.temp_token)
 
-        return { message: 'Reacting to incident...' }
+            return { message: 'Reacted to incident!' }
+        } catch (e) {
+            console.log(e)
+            return { error: true }
+        }
     } else if (_action === 'unlike') {
-        await removeAwareFromIncident(user?.id, values?.id, user.temp_token)
+        try {
+            await removeAwareFromIncident(user?.id, values?.id, user.temp_token)
 
-        return { message: 'Taking away reaction from incident...' }
+            return { message: 'Taking away reaction from incident...' }
+        } catch (e) {
+            console.log(e)
+            return { error: true }
+        }
     } else if (_action === 'comment') {
         if (values?.content?.trim() === "" || values?.content === null || !isString(values?.content)) {
             errors.blanktext = true
@@ -70,15 +80,45 @@ export async function action({ request }) {
 
         return { message: "Adding comment..." }
     } else if (_action === 'delete_comment') {
-        await removeCommentFromIncident(values?.comment_id, user.id, values?.incident_id, user.temp_token)
+        try {
+            await removeCommentFromIncident(values?.comment_id, user.id, values?.incident_id, user.temp_token)
 
-        return { message: "Deleting comment..." }
+            return { message: "Deleting comment..." }
+        } catch (e) {
+            console.log(e)
+            return { error: true, id: values?.comment_id ?? "none" }
+        }
     }
 }
 
+export function meta({ data }) {
+    let incident = data?.incident
+    return {
+        title: `${incident.name ?? 'not found'}`,
+        'og:title': `${incident.name ?? 'not found'}`,
+        description: `${incident.description ?? 'not found'}`,
+        'og:description': `${incident.description ?? 'not found'}`,
+        author: `twitch.tv/xQc`,
+        'og:url': `https://xqc.fail/i/${incident.id}`,
+        'og:image': `${incident.thumbnail_url ?? 'not found'}`,
+        'theme-color': '#000000'
+    };
+}
+
 export default function Incident() {
-    let { incident, user, user_liked_post, emotes } = useLoaderData()
+    let { incident, user, user_liked_post, emotes, error } = useLoaderData()
     let errors = useActionData()
+    let transition = useTransition()
+    let fetcher = useFetcher()
+    let isLiking = transition.submission && transition.submission?.formData.get("_action") === "like";
+    let isUnliking = transition.submission && transition.submission?.formData.get("_action") === "unlike";
+
+
+    // useEffect(() => {
+    //     if(isLiking) {
+
+    //     }
+    // })
 
     let [isOpen, setIsOpen] = useState(false)
 
@@ -96,13 +136,13 @@ export default function Incident() {
                 ?
                 <>
                     <div className='grid place-items-center'>
-                        <div className='p-6 w-full md:w-1/2 lg:w-3/5 filter backdrop-blur-lg bg-white/5 md:rounded-lg bg-opacity-80'>
-                            <div className='mb-5 px-0.5 py-0.5 hover:translate-x-3 transition-all duration-150 ease-in-out'>
-                                <NavLink to="/i" title='incidents page'>
-                                    Go Back
-                                </NavLink>
-                            </div>
+                        <div className='p-6 w-full md:w-1/2 lg:w-3/5 filter backdrop-blur-lg bg-black/20 md:rounded-lg bg-opacity-80'>
                             <div className='bg-black/20 p-3 rounded-lg'>
+                                <div className='mb-1 hover:translate-x-3 transition-all duration-150 ease-in-out'>
+                                    <NavLink to="/i" className="hover:underline mb-1 px-0.5 py-0.5 " title='incidents page'>
+                                        Go Back
+                                    </NavLink>
+                                </div>
                                 <h1 className='font-extrabold text-3xl'>
                                     {incident?.name}
                                 </h1>
@@ -129,7 +169,19 @@ export default function Incident() {
                                     <>
                                         <Form method='post' className='font-bold font-mono transition-all inline mr-2 pr-3 pl-2 py-1 bg-black duration-75 ease-in-out mb-2 text-lg rounded-xl border-white border-1 hover:border'>
                                             <input type="hidden" name="id" value={incident?.id} />
-                                            <button name='_action' value={user_liked_post === true ? 'unlike' : 'like'} className={user_liked_post ? ' text-amber-400 inline' : 'text-white inline'}> <img title='despairs' src="https://cdn.7tv.app/emote/613265d8248add8fdae01ad0/3x.webp" className='inline ml-0.5 w-[29px] rounded-2xl -translate-y-[1.5px]' /> {incident.awares.length} </button>
+                                            <button name='_action' value={user_liked_post === true ? 'unlike' : 'like'} className={user_liked_post ? ' text-purple-500 inline' : isLiking ? 'text-purple-500 inline' : 'text-white inline'}> <img title='despairs' src="https://cdn.7tv.app/emote/613265d8248add8fdae01ad0/3x.webp" className='inline ml-0.5 w-[29px] rounded-2xl -translate-y-[1.5px]' />
+                                                {
+                                                    isLiking
+                                                        ?
+                                                        incident.awares.length + 1
+                                                        :
+                                                        isUnliking
+                                                            ?
+                                                            incident.awares.length - 1
+                                                            :
+                                                            incident.awares.length
+                                                }
+                                            </button>
                                         </Form>
                                     </>
                                     :
@@ -137,15 +189,13 @@ export default function Incident() {
                                         <div className="font-bold font-mono transition-all inline mr-2 px-2 py-1 bg-black duration-150 ease-in-out mb-2 text-lg rounded-lg"><img title='despairs' src="https://cdn.7tv.app/emote/613265d8248add8fdae01ad0/3x.webp" className='inline ml-0.5 w-[29px] -translate-y-[1.5px]' /> {incident.awares.length}</div>
                                     </>
                             }
-                            <br className='md:hidden' />
-                            <br className='md:hidden' />
-                            <span className='mr-2 bg-yellow-500/10 rounded-xl px-2 py-1'>{incident?.clip_views} views on twitch</span>
-                            <br className='md:hidden' />
-                            <br className='md:hidden' />
-                            <span className='mr-2 bg-yellow-500/10 rounded-xl px-2 py-1'>clipped by {incident?.clipper}</span>
+                            <div className='mt-4 font-mono md:inline md:ml-3'>
+                                <span className='mr-2 px-2 py-1'>{incident?.clip_views} views.</span>
+                                <br className='md:hidden' />
+                                <span className='mr-2 px-2 py-1'>clipped by {incident?.clipper}.</span>
+                            </div>
                         </div>
-                        <br />
-                        <div className='w-full md:rounded-md md:w-1/2 lg:w-3/5 filter backdrop-blur-lg bg-white/5 bg-opacity-80'>
+                        <div className='w-full md:rounded-md md:w-1/2 lg:w-3/5 filter backdrop-blur-lg bg-transparent bg-opacity-80'>
                             <h1 className='font-extrabold text-xl p-4'>
                                 Thoughts? <span className='float-right text-sm'>{incident?.comments?.length} thoughts</span>
                             </h1>
@@ -199,10 +249,12 @@ export default function Incident() {
                                                                                     name='_action'
                                                                                     value={'comment'}
                                                                                     onClick={closeModal}
+                                                                                    disabled={transition.submission}
                                                                                     className="inline-flex mt-2 justify-center rounded-md border border-transparent bg-white px-4 py-2 text-sm font-medium text-black"                                            >
                                                                                     Publish!
                                                                                 </button>
-                                                                            </Form>                                                                        </div>
+                                                                            </Form>
+                                                                        </div>
                                                                     </Dialog.Description>
                                                                 </Dialog.Panel>
                                                             </Transition.Child>
@@ -215,20 +267,20 @@ export default function Incident() {
                                     </>
                                     :
                                     <>
-                                        <div className='border-t-1 border border-black grid place-items-center p-10'>
-                                            You are currently in read-only.
-                                            <br />
-                                            You can login with twitch to give your thoughts
-                                        </div>
+                                        <>
+                                            <div className='border-t-1 border border-black grid place-items-center p-1'>
+                                                You can login with twitch to give your thoughts
+                                            </div>
+                                        </>
                                     </>
                             }
                             {
                                 incident?.comments?.length > 0
                                     ?
                                     <>
-                                        <div>
+                                        <div className='bg-white/5'>
                                             {incident?.comments?.map((com) =>
-                                                <div className={com?.content?.includes(user?.display_name) ? 'bg-red-600/10 hover:bg-red-600/20 duration-150 transition-all ease-in-out p-2 md:p-3.5 border-l-2 border-red-400' : 'bg-black/10 hover:bg-black/20 duration-150 transition-all ease-in-out p-2 md:p-3.5 border-l-2 border-red-400'}>
+                                                <div hidden={transition.submission && transition.submission?.formData.get("_action") === "delete_comment" && transition.submission?.formData.get("comment_id") === com.id} className={com?.content?.includes(user?.display_name) ? 'bg-red-600/10 hover:bg-red-600/20 duration-150 transition-all ease-in-out p-2 md:p-3.5 border-l-2 border-red-400' : 'bg-black/10 hover:bg-black/20 duration-150 transition-all ease-in-out p-2 md:p-3.5 border-l-2 border-red-400'}>
                                                     <span className='float-right'>
                                                         {
                                                             com.can_user_modify
@@ -250,6 +302,7 @@ export default function Incident() {
                                                                                     value={'delete_comment'}
                                                                                     className="text-red-600 text-lg ml-2">
                                                                                     <RiChatDeleteLine className='hover:bg-red-600/40 rounded-xl' />
+
                                                                                 </button>
                                                                             </Form>
                                                                         </>
@@ -281,10 +334,9 @@ export default function Incident() {
                                                     <div className='inline mr-1'>
                                                         <span className='text-neutral-400 mr-0.5 text-sm font-light'>
                                                             <ClientOnly>
-                                                                {() => <Timestamp relative className="md:float-right font-mono my-auto" date={com?.created_at} />}
+                                                                {() => <Timestamp relative className="hidden md:inline md:float-right font-mono my-auto" date={com?.created_at} />}
                                                             </ClientOnly>
                                                         </span>
-                                                        <br className='md:hidden' />
                                                         <Username user={com?.creator} />:
                                                     </div>
                                                     <div className='inline'>

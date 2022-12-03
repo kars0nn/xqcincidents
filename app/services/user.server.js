@@ -45,6 +45,7 @@ export async function findUserById(id) {
             badges: true,
             is_subscriber: true,
             is_verified: true,
+            is_banned: true,
             temp_token: true
         }
     })

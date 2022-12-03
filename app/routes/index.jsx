@@ -11,11 +11,15 @@ import { ClientOnly } from 'remix-utils';
 export const loader = async ({ request }) => {
   let user = await isUserLoggedInSafe(request)
   let incident = await getLatestIncident()
-  return { user, incident };
+  let page = null;
+  if (user?.role === 'ADMIN' || user?.role === 'MOD') {
+    page = <Link to="/poopshit" className='hover:underline px-4 py-2 rounded-lg bg-purple-600/50'>Manage Submissions</Link>
+  }
+  return { user, incident, page };
 };
 
 export default function Index() {
-  let { user, incident } = useLoaderData();
+  let { user, incident, page } = useLoaderData();
   let i = incident
 
   return (
@@ -23,7 +27,7 @@ export default function Index() {
       <div className="lg:pl-28 lg:pr-28 md:pl-4 md:pr-4 md:m-0 mx-4">
         <div className="md:flex md:-mx-4">
           <div className="w-full h-auto md:sticky text-center md:top-12 md:mx-6 md:w-4/6 place-items-center filter backdrop-blur-sm bg-black/50 p-5 rounded-2xl">
-            <span className='text-md font-extrabold'>Time since last incident:</span>
+            <span className='text-md font-extrabold'>Last incident:</span>
             <br />
             <h1 className='text-5xl font-mono font-bold inline'>
               <ClientOnly>
@@ -65,8 +69,9 @@ export default function Index() {
                       <img src={i.thumbnail_url} className="w-full md:w-1/2 lg:w-1/3 my-3 rounded-lg lg:hidden" />
                       <br className='hidden lg:block' />
                       <div className='inline'>
-                        <span className='text-white'><span className="font-bold font-mono">{i.comments.length}</span> </span><GoCommentDiscussion className='inline text-neutral-400 text-lg ml-0.5 mr-2' title='comments' />
-                        | <span className="font-bold font-mono ml-1">{i.awares.length}</span> <img title='awares' src="https://cdn.7tv.app/emote/613265d8248add8fdae01ad0/1x.webp" className='inline w-[20px] ml-0.5' />
+                        <span className="font-bold font-mono ml-1">{i.awares.length}</span> <img title='awares' src="https://cdn.7tv.app/emote/613265d8248add8fdae01ad0/1x.webp" className='inline w-[20px] ml-0.5 mr-2' />
+                        | <span className='text-white'><span className="font-bold font-mono">{i.comments.length}</span> </span><GoCommentDiscussion className='inline text-neutral-400 text-lg ml-0.5 mr-2' title='comments' />
+
                       </div>
                       <br className='md:hidden' />
                       <small className='md:float-right translate-y-2'>Clipped by {i.clipper} - Submitted by <Username small user={i.submitter} /> </small>
@@ -102,6 +107,18 @@ export default function Index() {
           }
           <br />
           <Link className='hover:underline font-extrabold text-xl' to="/i">view all incidents</Link>
+          <br />
+          <br />
+          <br />
+          {
+            page != null
+              ?
+              <Link {...page?.props}>
+                {page?.props?.children}
+              </Link>
+              :
+              <></>
+          }
         </div>
         <br />
       </div>

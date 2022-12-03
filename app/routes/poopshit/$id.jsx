@@ -1,5 +1,5 @@
 import { TwitchClip } from 'react-twitch-embed';
-import { Link, useLoaderData, Form, useActionData } from '@remix-run/react'
+import { Link, useLoaderData, Form, useActionData, useTransition } from '@remix-run/react'
 import { ClientOnly } from 'remix-utils';
 import { authenticator, isUserLoggedIn, twitchStrategy } from '~/services/auth.server';
 import { acceptIncident, getClipInfo, getIncident, rejectIncident } from '~/services/incident.server';
@@ -23,11 +23,12 @@ export async function action({ request }) {
     let { _action, ...values } = Object.fromEntries(formData);
 
     if (_action === 'accept') {
-        let updated = await acceptIncident(values?.id ?? 'none')
+        console.log(values)
+        let updated = await acceptIncident(values?.id ?? 'none', values?.name, values?.description)
 
         if (updated.status === 'ACCEPTED') return { success: 'accepted!' }
     } else if (_action === 'reject') {
-        let updated = await rejectIncident(values?.id ?? 'none')
+        await rejectIncident(values?.id ?? 'none')
 
         return { success: 'rejected!' }
     }
@@ -37,6 +38,13 @@ export default function Incident() {
     let data = useLoaderData()
     let status = data?.status
     let [isOpen, setIsOpen] = useState(false)
+    const [title, setTitle] = useState(data?.name);
+    const [description, setDescription] = useState(data?.description);
+    const transition = useTransition();
+
+    if(transition?.submission) {
+        openSuccessModal()
+    }
 
     function closeModal() {
         setIsOpen(false)
@@ -62,10 +70,11 @@ export default function Incident() {
             <ClientOnly>
                 {() => <>Submitted <Timestamp relative date={data.created_at} /></>}
             </ClientOnly>
+            <small>you may edit typos</small>
             <br />
             <div className='p-6 w-full filter backdrop-blur-lg bg-white/5 md:rounded-lg bg-opacity-80'>
                 <h1 className='font-extrabold text-3xl'>
-                    {data.name}
+                    <input type="text" onChange={(e) => setTitle(e.target.value)} className='bg-transparent hover:bg-black/20 hover:p-2 rounded-lg transition-all duration-100 ease-in-out' defaultValue={title} />
                 </h1>
                 <div className='font-bold text-xl text-neutral-400'>
                     <ClientOnly>
@@ -81,7 +90,8 @@ export default function Incident() {
                     </ClientOnly>
                 </div>
                 <br />
-                <p className='p-3 rounded-md bg-black/20 text-neutral-200'>{data.description}</p>
+                <input onChange={(e) => setDescription(e.target.value)} className='p-3 rounded-md bg-black/20 text-neutral-200 w-full hover:p-5 transition-all duration-100 ease-in-out' type="text" defaultValue={description} />
+                <br />
                 <br />
                 <span className="font-bold font-mono text-lg"><img title='awares' src="https://cdn.7tv.app/emote/613265d8248add8fdae01ad0/1x.webp" className='inline ml-0.5' /> 0</span>
 
@@ -119,7 +129,7 @@ export default function Incident() {
                                             as="h3"
                                             className="text-lg font-medium leading-6 text-white"
                                         >
-                                            Already managed
+                                            Success!
                                         </Dialog.Title>
                                         <div className="mt-2">
                                             <p className="text-sm text-gray-300">
@@ -183,6 +193,8 @@ export default function Incident() {
                                         <div className="mt-4">
                                             <Form method="post" className='inline mr-5'>
                                                 <input type='hidden' name="id" value={data.id} />
+                                                <input type="hidden" name="name" value={title} />
+                                                <input type="hidden" name="description" value={description} />
                                                 <button onClick={closeModal} name='_action' value="accept" type="submit" className='px-4 py-2 rounded-lg bg-green-600/40 hover:bg-green-600/60 transition-all duration-150 ease-in-out'>
                                                     Accept
                                                 </button>

@@ -2,7 +2,7 @@
   "private": true,
   "sideEffects": false,
   "scripts": {
-    "build": "npm run build:css && remix build && prisma generate --data-proxy",
+    "build": "npm run build:css && remix build",
     "build:css": "tailwindcss -m -i ./styles/app.css -o app/styles/app.css",
     "dev": "concurrently \"npm run dev:css\" \"remix dev\"",
     "dev:css": "tailwindcss -w -i ./styles/app.css -o app/styles/app.css",
@@ -16,6 +16,7 @@
     "@remix-run/serve": "^1.7.6",
     "cryptr": "^6.0.3",
     "dotenv": "^16.0.3",
+    "expletives": "^0.1.2",
     "is-string": "^1.0.7",
     "isbot": "^3.6.5",
     "node-fetch": "^3.3.0",
