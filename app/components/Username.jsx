@@ -11,7 +11,7 @@ export function Username({ user, small }) {
                     user.role === "MOD" ?
                         <>
                             <img
-                                className={small ? 'inline w-[12px] -translate-y-[1px] ml-[2px] mr-[1px]' : 'inline w-[18px] -translate-y-[1px] ml-[3px] mr-[2px]'}
+                                className={small ? 'inline w-[12px] -translate-y-[1px] mr-[1px]' : 'inline w-[18px] -translate-y-[1px] mr-[2px]'}
                                 src="/badges/mod.png"
                             />
                             <img
@@ -22,7 +22,7 @@ export function Username({ user, small }) {
 
                         : user.role === "ADMIN" &&
                         <img
-                            className={small ? 'inline w-[12px] -translate-y-[1px] ml-[2px] mr-[1px]' : 'inline w-[18px] -translate-y-[1px] ml-[3px] mr-[2px]'}
+                            className={small ? 'inline w-[12px] -translate-y-[1px] mr-[2px]' : 'inline w-[18px] -translate-y-[1px] mr-[3px]'}
                             src="/badges/admin.png"
                         />
                     :
