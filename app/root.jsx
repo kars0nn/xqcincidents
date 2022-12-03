@@ -57,6 +57,7 @@ export const meta = () => ({
   'og:type': `website`,
   'og:image:alt': 'Aware',
   viewport: "width=device-width,initial-scale=1",
+  "referrer": "no-refferer"
 })
 
 export default function App() {
@@ -70,6 +71,7 @@ export default function App() {
   return (
     <html lang="en">
       <head>
+        <meta name="referrer" content="no-referrer" />
         <Meta />
         <Links />
       </head>
@@ -100,10 +102,10 @@ export function Navigation({ children }) {
         {
           data?.user?.is_banned === true
             ?
-              <>
-                <span className="w-12 inline mr-5 ">YOU ARE BANNED.</span>
-              </>
-          :
+            <>
+              <span className="w-12 inline mr-5 ">YOU ARE BANNED.</span>
+            </>
+            :
             <Link to="/">
               <img src="https://cdn.7tv.app/emote/6249bf0a835f6c1e0ad979bb/4x.webp" className="w-12 inline mr-5" alt="fabulous_pshyco's xqcDespair emote on 7tv" title="fabulous_pshyco's xqcDespair emote on 7tv" />
               <span className="font-bold hover:underline" title="xQc incidents">xQc incidents</span>
