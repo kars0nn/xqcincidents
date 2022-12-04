@@ -120,13 +120,23 @@ export default function Incident() {
         setIsOpen(true)
     }
 
+    const [showDate, setShowDate] = useState(false);
+
+    const showDateTrue = () => {
+        setShowDate(true)
+    }
+
+    const hideDate = () => {
+        setShowDate(false)
+    }
+
     return (
         <>
             {incident !== null
                 ?
                 <>
                     <div className='grid place-items-center'>
-                        <div className='p-6 w-full md:w-1/2 lg:w-3/5 filter backdrop-blur-lg bg-black/20 md:rounded-lg bg-opacity-80'>
+                        <div className='md:p-6 w-full md:w-1/2 lg:w-3/6 filter backdrop-blur-lg bg-black/20 md:rounded-lg bg-opacity-80'>
                             <div className='bg-black/20 p-3 rounded-lg'>
                                 <div className='mb-1 hover:translate-x-3 transition-all duration-150 ease-in-out'>
                                     <NavLink to="/i" className="hover:underline mb-1 px-0.5 py-0.5 " title='incidents page'>
@@ -146,51 +156,52 @@ export default function Incident() {
                             <div className='m max-w-full md:max-w-1/2 lg:max-w-3/5'>
                                 <TwitchClip clip={incident?.clip_link} className='rounded-lg w-full h-72 lg:h-96 lg:w-full' />
                             </div>
-                            <br />
-                            <p className='p-3 rounded-md bg-black/20 text-neutral-200'>{incident?.description}</p>
-                            <br />
-                            {
-                                user
-                                    ?
-                                    <>
-                                        <Form method='post' className='font-bold font-mono transition-all inline mr-2 pr-3 pl-2 py-1 bg-black duration-75 ease-in-out mb-2 text-lg rounded-xl border-white border-1 hover:border'>
-                                            <input type="hidden" name="id" value={incident?.id} />
-                                            <button name='_action' value={user_liked_post === true ? 'unlike' : 'like'} className={user_liked_post ? ' text-purple-500 inline' : isLiking ? 'text-purple-500 inline' : 'text-white inline'}> <img title='despairs' src="https://cdn.7tv.app/emote/613265d8248add8fdae01ad0/3x.webp" className='inline ml-0.5 w-[29px] rounded-2xl -translate-y-[1.5px]' />
-                                                {
-                                                    isLiking
-                                                        ?
-                                                        incident.awares.length + 1
-                                                        :
-                                                        (isUnliking
+                            <div className='px-3 pb-6'>
+                                <br />
+                                <p className='p-3 rounded-md bg-black/20 text-neutral-200'>{incident?.description}</p>
+                                <br />
+                                {
+                                    user
+                                        ?
+                                        <>
+                                            <Form method='post' className='font-bold font-mono transition-all inline mr-2 pr-3 pl-2 py-1 bg-black duration-75 ease-in-out mb-2 text-lg rounded-xl border-white border-1 hover:border'>
+                                                <input type="hidden" name="id" value={incident?.id} />
+                                                <button name='_action' value={user_liked_post === true ? 'unlike' : 'like'} className={user_liked_post ? ' text-purple-500 inline' : isLiking ? 'text-purple-500 inline' : 'text-white inline'}> <img title='despairs' src="https://cdn.7tv.app/emote/613265d8248add8fdae01ad0/3x.webp" className='inline ml-0.5 w-[29px] rounded-2xl -translate-y-[1.5px]' />
+                                                    {
+                                                        isLiking
                                                             ?
-                                                            incident.awares.length - 1
+                                                            incident.awares.length + 1
                                                             :
-                                                            incident.awares.length)
-                                                }
-                                            </button>
-                                        </Form>
-                                    </>
-                                    :
-                                    <>
-                                        <div className="font-bold font-mono transition-all inline mr-2 px-2 py-1 bg-black duration-150 ease-in-out mb-2 text-lg rounded-lg"><img title='despairs' src="https://cdn.7tv.app/emote/613265d8248add8fdae01ad0/3x.webp" className='inline ml-0.5 w-[29px] -translate-y-[1.5px]' /> {incident.awares.length}</div>
-                                    </>
-                            }
-                            <div className='mt-4 font-mono md:inline md:ml-3'>
-                                <span className='mr-2 px-2 py-1'>{incident?.clip_views} views.</span>
-                                <br className='md:hidden' />
-                                <span className='mr-2 px-2 py-1'>clipped by {incident?.clipper}.</span>
+                                                            (isUnliking
+                                                                ?
+                                                                incident.awares.length - 1
+                                                                :
+                                                                incident.awares.length)
+                                                    }
+                                                </button>
+                                            </Form>
+                                        </>
+                                        :
+                                        <>
+                                            <div className="font-bold font-mono transition-all inline mr-2 px-2 py-1 bg-black duration-150 ease-in-out mb-2 text-lg rounded-lg"><img title='despairs' src="https://cdn.7tv.app/emote/613265d8248add8fdae01ad0/3x.webp" className='inline ml-0.5 w-[29px] -translate-y-[1.5px]' /> {incident.awares.length}</div>
+                                        </>
+                                }
+                                <div className='mt-4 font-mono md:inline md:ml-3'>
+                                    <span className='hidden md:inline mr-2 px-2 py-1'>{incident?.clip_views} views.</span>
+                                    <span className='mr-2 px-2 py-1'>clipped by {incident?.clipper}.</span>
+                                </div>
                             </div>
                         </div>
-                        <div className='w-full md:rounded-md md:w-1/2 lg:w-3/5 filter backdrop-blur-lg bg-transparent bg-opacity-80'>
-                            <h1 className='font-extrabold text-xl p-4'>
-                                Thoughts? <span className='float-right text-sm'>{incident?.comments?.length} thoughts</span>
+                        <div className='w-full md:rounded-md md:w-1/2 lg:w-3/6 filter backdrop-blur-lg bg-transparent bg-opacity-80'>
+                            <h1 className='font-bold text-lg p-4 text-center md:text-start'>
+                                THOUGHTS? <span className='float-right text-sm hidden md:inline font-normal'><span className='font-bold'>{incident?.comments?.length}</span> thoughts</span>
                             </h1>
                             {
                                 user
                                     ?
                                     <>
                                         <div>
-                                            <button className='px-3 py-1 mx-3 rounded-lg hover:bg-black/50 bg-black/30' onClick={openModal}>Comment</button>
+                                            <button className='px-3 py-1 rounded-lg hover:bg-black/50 bg-black/30 mx-[37%] md:mx-3' onClick={openModal}>Comment</button>
                                             <Transition appear show={isOpen} as={Fragment}>
                                                 <Dialog as="div" className="relative z-10" onClose={closeModal}>
                                                     <Transition.Child
@@ -254,7 +265,7 @@ export default function Incident() {
                                     :
                                     <>
                                         <>
-                                            <div className='border-t-1 border border-black grid place-items-center p-1'>
+                                            <div className='grid place-items-center p-2 pb-7 '>
                                                 You can login with twitch to give your thoughts
                                             </div>
                                         </>
@@ -264,9 +275,16 @@ export default function Incident() {
                                 incident?.comments?.length > 0
                                     ?
                                     <>
-                                        <div className='bg-white/5'>
+                                        <div>
+                                            {
+                                                showDate
+                                                ?
+                                                <button onClick={hideDate} className="p-2 bg-black/20 transition-all duration-150 ease-linear rounded-t-md">Hide Date</button>
+                                                :
+                                                <button onClick={showDateTrue} className="p-2 bg-black/20 transition-all duration-150 ease-linear rounded-t-md">Show Date?</button>
+                                            }
                                             {incident?.comments?.map((com) =>
-                                                <div key={com?.id} hidden={transition.submission && transition.submission?.formData.get("_action") === "delete_comment" && transition.submission?.formData.get("comment_id") === com.id} className={com?.content?.includes(user?.display_name) ? 'bg-red-600/10 hover:bg-red-600/20 duration-150 transition-all ease-in-out p-2 md:p-3.5 border-l-2 border-red-400' : 'bg-black/10 hover:bg-black/20 duration-150 transition-all ease-in-out p-2 md:p-3.5 border-l-2 border-red-400'}>
+                                                <div key={com?.id} hidden={transition.submission && transition.submission?.formData.get("_action") === "delete_comment" && transition.submission?.formData.get("comment_id") === com.id} className={com?.content?.includes(user?.display_name) ? 'bg-red-600/10 hover:bg-red-600/20 duration-150 transition-all ease-in-out p-2 md:p-2.5 border-l-2 border-red-400' : 'bg-black/60 hover:bg-black/40 duration-150 transition-all ease-in-out p-2 md:p-2.5 border-l-2 border-red-400'}>
                                                     <span className='float-right'>
                                                         {
                                                             com.can_user_modify
@@ -318,9 +336,9 @@ export default function Incident() {
                                                         }
                                                     </span>
                                                     <div className='inline mr-1'>
-                                                        <span className='text-neutral-400 hidden md:inline mr-0.5 text-sm font-light'>
+                                                        <span className={showDate ? 'text-neutral-400 mr-0.5 text-sm font-light' : 'hidden'}>
                                                             <ClientOnly>
-                                                                {() => <Timestamp relative className="hidden md:inline md:float-right font-mono my-auto" date={com?.created_at} />}
+                                                                {() => <Timestamp relative className="float-right font-mono my-auto text-xs md:text-md" date={com?.created_at} />}
                                                             </ClientOnly>
                                                         </span>
                                                         <Username user={com?.creator} />:

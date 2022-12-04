@@ -13,7 +13,7 @@ export const loader = async ({ request }) => {
   let incident = await getLatestIncident()
   let page = null;
   if (user?.role === 'ADMIN' || user?.role === 'MOD') {
-    page = <Link to="/poopshit" className='hover:underline px-4 py-2 rounded-lg bg-purple-600/50'>Manage Submissions</Link>
+    page = <Link to="/poopshit" className='hover:underline px-4 py-2 rounded-lg bg-purple-600/50'>Mod/Admin Management</Link>
   }
   return { user, incident, page };
 };

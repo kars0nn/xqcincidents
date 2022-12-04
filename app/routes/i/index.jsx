@@ -1,19 +1,30 @@
 import { GoCommentDiscussion } from 'react-icons/go'
-import { Link, useLoaderData } from '@remix-run/react'
+import { Link, useLoaderData, Form } from '@remix-run/react'
 import { authenticator, isUserLoggedIn, isUserLoggedInSafe, twitchStrategy } from '~/services/auth.server';
 import { getAllIncidents } from '~/services/incident.server';
 import { Username } from '~/components/Username';
 import Timestamp from 'react-timestamp'
 import { ClientOnly } from 'remix-utils';
+import { redirect } from '@remix-run/node';
 
-export const loader = async ({ request }) => {
+export const loader = async ({ request, params }) => {
     let user = await isUserLoggedInSafe(request)
+    let sort = params.s
+    if (sort !== 'asc' || sort !== 'desc') sort = 'desc';
     let incidents = await getAllIncidents()
     return { user, incidents };
 };
 
 export default function Index() {
     let { user, incidents } = useLoaderData();
+
+    // const sortfunc = (value) => {
+    //     if(value === 'latest') {
+    //         redirect('/i')
+    //     } else if (value === 'asc') {
+    //         redirect('/i?s=asc')
+    //     }
+    // }
 
     return (
         <div className='grid place-items-center'>
@@ -24,6 +35,13 @@ export default function Index() {
                         <Link className='mb-3 px-2 py-0.5 bg-black/20 rounded-md hover:bg-black/30' to="submit">
                             Submit an Incident
                         </Link>
+                        {/* <Form>
+                            <select name='s' itemType='submit' className='inline bg-black'>
+                                <option disabled selected>Sort By...</option>
+                                <option value="desc">Latest</option>
+                                <option value="asc">First</option>
+                            </select>
+                        </Form> */}
                     </>
                     :
                     <>
@@ -34,7 +52,7 @@ export default function Index() {
                     ?
                     <>
                         {incidents.map((i) =>
-                            <div key={i.id} className='p-4 md:p-6 w-full md:w-3/4 mt-2 lg:w-3/5 hover:bg-purple-600/20 bg-purple-600/5 md:rounded-lg border-purple-600 border-r-2 border-l-2 transition-all duration-150 ease-in-out hover:shadow-lg mb-5'>
+                            <div key={i.id} className='p-4 md:p-6 w-full md:w-4/5 mt-2 lg:w-3/6 hover:bg-purple-600/20 bg-purple-600/5 md:rounded-lg border-purple-600 border-r-2 border-l-2 transition-all duration-150 ease-in-out hover:shadow-lg mb-5'>
                                 <Link to={`${i.id}`} key={i.id} >
                                     <div key={i.title}>
                                         <div className='font-extrabold text-xl text-neutral-400'>
