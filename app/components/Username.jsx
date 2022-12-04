@@ -33,7 +33,7 @@ export function Username({ user, small }) {
                     ?
                     <img
                         title={user?.stvbadge_tooltip}
-                        className={small ? 'inline w-[12px] -translate-y-[1px] mr-[1px]' : 'inline w-[18px] -translate-y-[1px] mr-[2px]'}
+                        className={small ? 'inline w-[12px] -translate-y-[1px] mr-[1px]' : 'inline w-[18px] absolute -translate-y-[1px] mr-[2px]'}
                         src={user?.stvbadge_url}
                     />
                     :

@@ -6,7 +6,7 @@ export function CommentI({ emotes, content, id }) {
     let emotesFound = []
     emotes.forEach((e) => {
         if (content.split(" ").includes(e.name)) {
-            emotesFound.push({ name: e.name, url: `https://cdn.7tv.app/emote/${e.id}/1x.avif`, width: e.width, height: e.height })
+            emotesFound.push({ name: e.name, url: `https://cdn.7tv.app/emote/${e.id}/1x.webp`, width: e.width, height: e.height })
         } else {
 
         }
