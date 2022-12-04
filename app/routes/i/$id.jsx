@@ -137,23 +137,14 @@ export default function Incident() {
                                     {incident?.name}
                                 </h1>
                                 <div className='font-bold text-xl text-neutral-400'>
-                                    {/* <Timestamp date={incident?.date} /> */}
                                     <ClientOnly>
                                         {() => <Timestamp date={incident?.date} />}
                                     </ClientOnly>
-                                    {/* <ClientOnly>
-                                        {() => <Timestamp date={incident?.date} />}
-                                    </ClientOnly> */}
                                 </div>
                             </div>
                             <br />
                             <div className='m max-w-full md:max-w-1/2 lg:max-w-3/5'>
                                 <TwitchClip clip={incident?.clip_link} className='rounded-lg w-full h-72 lg:h-96 lg:w-full' />
-                                {/* <ClientOnly>
-                                    {(() =>
-                                        <TwitchClip clip={incident?.clip_link} className='rounded-lg w-full h-72 lg:h-96 lg:w-full' />
-                                    )}
-                                </ClientOnly> */}
                             </div>
                             <br />
                             <p className='p-3 rounded-md bg-black/20 text-neutral-200'>{incident?.description}</p>
@@ -275,7 +266,7 @@ export default function Incident() {
                                     <>
                                         <div className='bg-white/5'>
                                             {incident?.comments?.map((com) =>
-                                                <div hidden={transition.submission && transition.submission?.formData.get("_action") === "delete_comment" && transition.submission?.formData.get("comment_id") === com.id} className={com?.content?.includes(user?.display_name) ? 'bg-red-600/10 hover:bg-red-600/20 duration-150 transition-all ease-in-out p-2 md:p-3.5 border-l-2 border-red-400' : 'bg-black/10 hover:bg-black/20 duration-150 transition-all ease-in-out p-2 md:p-3.5 border-l-2 border-red-400'}>
+                                                <div key={com?.id} hidden={transition.submission && transition.submission?.formData.get("_action") === "delete_comment" && transition.submission?.formData.get("comment_id") === com.id} className={com?.content?.includes(user?.display_name) ? 'bg-red-600/10 hover:bg-red-600/20 duration-150 transition-all ease-in-out p-2 md:p-3.5 border-l-2 border-red-400' : 'bg-black/10 hover:bg-black/20 duration-150 transition-all ease-in-out p-2 md:p-3.5 border-l-2 border-red-400'}>
                                                     <span className='float-right'>
                                                         {
                                                             com.can_user_modify
@@ -335,7 +326,7 @@ export default function Incident() {
                                                         <Username user={com?.creator} />:
                                                     </div>
                                                     <div className='inline'>
-                                                        <CommentI content={com?.content} emotes={emotes} viewer={user} />
+                                                        <CommentI key={com?.id} content={com?.content} id={com?.id} emotes={emotes} viewer={user} />
                                                     </div>
                                                 </div>
                                             )}
