@@ -67,7 +67,7 @@ export function CommentI({ emotes, content, id }) {
                     :
                     <></>
             }
-            <div key={id + 'fhdsjk'} className={flag ? 'inline filter blur-sm' : 'inline'}>
+            <div key={id + 'fhdsjk'} className={flag ? 'inline filter blur-sm text-start' : 'inline text-start'}>
                 {
                     content
                 }
