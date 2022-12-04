@@ -3,14 +3,14 @@ import reactStringReplace from 'react-string-replace'
 // import { nazi, nword } from 'expletives'
 
 export function CommentI({ emotes, content }) {
-    // let emotesFound = []
-    // emotes.forEach((e) => {
-    //     if (content.toString().split(" ").includes(e.name)) {
-    //         emotesFound.push({ name: e.name, url: `https://cdn.7tv.app/emote/${e.id}/1x.webp`, width: e.width, height: e.height })
-    //     } else {
+    let emotesFound = []
+    emotes.forEach((e) => {
+        if (content.toString().split(" ").includes(e.name)) {
+            emotesFound.push({ name: e.name, url: `https://cdn.7tv.app/emote/${e.id}/1x.webp`, width: e.width, height: e.height })
+        } else {
 
-    //     }
-    // })
+        }
+    })
 
     function nword(text) {
         const r = new RegExp(`[nN]+[iI1lL|]+[GgKkQq469]+[Ee3Aa4iI]+[RrAa4]+[sS]?`)
