@@ -12,14 +12,14 @@ export function CommentI({ emotes, content, id }) {
         }
     })
 
-    function nword(text) {
-        const r = new RegExp(`[nN]+[iI1lL|]+[GgKkQq469]+[Ee3Aa4iI]+[RrAa4]+[sS]?`)
-        return r.test(text)
-    }
-    function nazi(text) {
-        const r = new RegExp(`[nN]+[a4A|]+[zZ]+[Ii1l]+[sS]?`)
-        return r.test(text)
-    }
+    // function nword(text) {
+    //     const r = new RegExp(`[nN]+[iI1lL|]+[GgKkQq469]+[Ee3Aa4iI]+[RrAa4]+[sS]?`)
+    //     return r.test(text)
+    // }
+    // function nazi(text) {
+    //     const r = new RegExp(`[nN]+[a4A|]+[zZ]+[Ii1l]+[sS]?`)
+    //     return r.test(text)
+    // }
 
     // function emojiSearcher(text) {
     // 	return emotesFound.map((emote) => {
@@ -50,13 +50,13 @@ export function CommentI({ emotes, content, id }) {
     //     <span>{match}</span>
     // ))
 
-    let isnsfw = nazi(content) || nword(content)
+    // let isnsfw = nazi(content) || nword(content)
 
-    const [flag, setflag] = useState(isnsfw);
+    // const [flag, setflag] = useState(isnsfw);
 
-    let show = () => {
-        setflag(!flag)
-    }
+    // let show = () => {
+    //     setflag(!flag)
+    // }
 
     return (
         <div key={id} className="inline">
@@ -67,7 +67,7 @@ export function CommentI({ emotes, content, id }) {
                     :
                     <></>
             }
-            <div key={id + 'fhdsjk'} className={flag ? 'inline filter blur-sm text-start' : 'inline text-start'}>
+            <div key={id + 'fhdsjk'} className={flag ? 'inline filter blur-sm' : 'inline'}>
                 {
                     content
                 }
