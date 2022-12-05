@@ -7,6 +7,7 @@ import { getAllIncidents, getLatestIncident } from '~/services/incident.server';
 import { Username } from '~/components/Username';
 import Timestamp from 'react-timestamp'
 import { ClientOnly } from 'remix-utils';
+import { Countdown } from '~/components/Countdown'
 
 export const loader = async ({ request }) => {
   let user = await isUserLoggedInSafe(request)
@@ -27,11 +28,11 @@ export default function Index() {
       <div className="lg:pl-28 lg:pr-28 md:pl-4 md:pr-4 md:m-0 mx-4">
         <div className="md:flex md:-mx-4">
           <div className="w-full h-auto md:sticky text-center md:top-12 md:mx-6 md:w-4/6 place-items-center filter backdrop-blur-sm bg-black/50 p-5 rounded-2xl">
-            <span className='text-md font-extrabold'>Last incident:</span>
+            <span className='text-md font-extrabold'>Time since last incident:</span>
             <br />
-            <h1 className='text-5xl font-mono font-bold inline'>
+            <h1 className='text-4xl font-mono font-bold inline'>
               <ClientOnly>
-                {() => i == null ? 'No incidents!' : <Timestamp date={i?.date} relative />}
+                {() => i == null ? 'No incidents!' : <Countdown dateString={i?.date} />}
               </ClientOnly>
             </h1>
             <div className='text-center'>
