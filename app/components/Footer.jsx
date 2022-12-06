@@ -15,6 +15,10 @@ export function Footer({ user }) {
                     Made by dkarsonn (karson#0001)
                     <br />
                     Report any bugs to me on discord.
+                    <br />
+                    <br />
+                    Questions about making an account?
+                    <br /> <Link className='text-blue-500 hover:underline' to="about">Click here for account questions</Link>
                 </p>
             </div>
         </>
